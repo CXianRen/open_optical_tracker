@@ -38,11 +38,12 @@ def draw(img, corners, imgpts):
     return img
 
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+# 4*6：x y z
 objp = np.zeros((S[1]*S[0],3), np.float32)
 objp[:,:2] = np.mgrid[0:S[0], 0:S[1]].T.reshape(-1,2)
 
-axis = np.float32([[0,0,0], [0,3,0], [3,3,0], [3,0,0],
-                   [0,0,-3],[0,3,-3],[3,3,-3],[3,0,-3] ])
+axis = np.float32([[0,0,0], [0,1,0], [1,1,0], [1,0,0],
+                   [0.5,0.5,-2],[0.5,0.5,-2],[1,1,-0],[1,0,-0] ])
 
 try:
     if(is_cap):
@@ -73,7 +74,10 @@ while 1:
         corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
 
         # Find the rotation and translation vectors.
-        _, rvecs, tvecs, inliers = cv2.solvePnPRansac(objp, corners, mtx, dist)
+        # objp 实际坐标系
+        # corners 像素坐标系
+        # mtx dist 畸变矫正参数
+        _, rvecs, tvecs, inliers = cv2.solvePnPRansac(objp, corners2, mtx, dist)
 
         # project 3D points to image plane
         imgpts, jac = cv2.projectPoints(axis, rvecs, tvecs, mtx, dist)
