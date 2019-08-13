@@ -6,9 +6,13 @@ import matplotlib.pyplot as plt
 
 #sizeof chessboard
 S=(6,4)
-chessboard_path="./img/servo_camera/"
-test_img_path="./test_img/servo_camera/"
-cal_result_save_path="./test_img/servo_camera/"
+camera="logi270"
+chessboard_path="./img/"+camera+"/"
+test_img_path="./test_img/"+camera+"/"
+cal_result_save_path="./test_img/"+camera+"/"
+
+run_test=False
+
 # termination criteria
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
@@ -38,28 +42,28 @@ cv2.destroyAllWindows()
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
 
 
-
-img = cv2.imread(test_img_path+'test.jpg')
-h,  w = img.shape[0:2]
-newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
-
-
-# undistort
-dst = cv2.undistort(img, mtx, dist, None, newcameramtx)
-
-# crop the image
-x,y,w,h = roi
-dst = dst[y:y+h, x:x+w]
-cv2.imwrite('calibresult.png',dst)
+if(run_test):
+	img = cv2.imread(test_img_path+'test.jpg')
+	h,  w = img.shape[0:2]
+	newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 
 
-mean_error = 0
-for i in range(len(objpoints)):
-    imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs[i], tvecs[i], mtx, dist)
-    error = cv2.norm(imgpoints[i],imgpoints2, cv2.NORM_L2)/len(imgpoints2)
-    mean_error +=error
+	# undistort
+	dst = cv2.undistort(img, mtx, dist, None, newcameramtx)
 
-print ("total error: ", mean_error/len(objpoints))
+	# crop the image
+	x,y,w,h = roi
+	dst = dst[y:y+h, x:x+w]
+	cv2.imwrite('calibresult.png',dst)
+
+
+	mean_error = 0
+	for i in range(len(objpoints)):
+		imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs[i], tvecs[i], mtx, dist)
+		error = cv2.norm(imgpoints[i],imgpoints2, cv2.NORM_L2)/len(imgpoints2)
+		mean_error +=error
+
+	print ("total error: ", mean_error/len(objpoints))
 
 np.savez(cal_result_save_path+"save_cal.npz",mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)
 # import pickle

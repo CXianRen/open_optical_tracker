@@ -2,8 +2,20 @@ import cv2
 import numpy as np
 import glob
 
-cal_path="./test_img/servo_camera/"
-img_path="./test_img/servo_camera/"
+
+camera="logi270"
+cal_path="./test_img/"+camera+"/"
+img_path="./test_img/"+camera+"/"
+
+# TODO THERE ARE SOME BUGS IN OPENING CAMERA IN 1280*720
+is_cap=0
+camera_id=0
+
+cap_h=1280
+cap_w=720
+
+test_video="test.mp4"
+
 S=(6,4)
 
 # Load previously saved data
@@ -32,8 +44,18 @@ objp[:,:2] = np.mgrid[0:S[0], 0:S[1]].T.reshape(-1,2)
 axis = np.float32([[0,0,0], [0,3,0], [3,3,0], [3,0,0],
                    [0,0,-3],[0,3,-3],[3,3,-3],[3,0,-3] ])
 
-cap=cv2.VideoCapture(img_path+"WIN_20190812_18_00_44_Pro.mp4")
-
+try:
+    if(is_cap):
+        cap=cv2.VideoCapture(camera_id)
+        # cap.set(cv2.CAP_PROP_FOURCC, cv2.FOURCC('M', 'J', 'P', 'G'))
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH,cap_w)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT,cap_h)
+        cap.set(cv2.CAP_PROP_FPS, 30)
+    else:
+        cap=cv2.VideoCapture(img_path+test_video)
+except Exception as e:
+    print(e)
+    exit(0)
 
 # for fname in glob.glob(img_path+'*.jpg'):
     # img = cv2.imread(fname)
@@ -48,7 +70,7 @@ while 1:
         break
 
     if ret:
-        # corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
+        corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
 
         # Find the rotation and translation vectors.
         _, rvecs, tvecs, inliers = cv2.solvePnPRansac(objp, corners, mtx, dist)
@@ -57,8 +79,11 @@ while 1:
         imgpts, jac = cv2.projectPoints(axis, rvecs, tvecs, mtx, dist)
 
         img = draw(img,corners,imgpts)
+        pass
     cv2.imshow('img',img)
-    cv2.waitKey(30)
+    k=cv2.waitKey(10) & 0XFF
+    if(k=='s'):
+        break
 
 
 cv2.destroyAllWindows()
