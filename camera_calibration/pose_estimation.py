@@ -72,7 +72,7 @@ while 1:
 
     if ret:
         corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
-
+        print(corners2)
         # Find the rotation and translation vectors.
         # objp 实际坐标系
         # corners 像素坐标系

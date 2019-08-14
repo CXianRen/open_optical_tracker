@@ -66,33 +66,52 @@ if(run_test):
 	print ("total error: ", mean_error/len(objpoints))
 
 np.savez(cal_result_save_path+"save_cal.npz",mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)
-# import pickle
-
-# # Test undistortion on an image
-# img = cv2.imread('./tftest.jpg')
-
-# img_size = (img.shape[1], img.shape[0])
-
-# # Do camera calibration given object points and image points
-# ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints,(1280,720),None,None)
-# print("mtx:")
-# print(mtx)
-# print("dist:")
-# print(dist)
-
-# dst = cv2.undistort(img, mtx, dist, None, mtx)
-# cv2.imwrite('resultimg/result11.jpg',dst)
-
-# # Save the camera calibration result for later use (we won't worry about rvecs / tvecs)
-# dist_pickle = {}
-# dist_pickle["mtx"] = mtx
-# dist_pickle["dist"] = dist
-# pickle.dump( dist_pickle, open( "./wide_dist_pickle.p", "wb" ) )
-# #dst = cv2.cvtColor(dst, cv2.COLOR_BGR2RGB)
-# # Visualize undistortion
-
-# # delt=dst-img
-# #cv2.imshow('result', delt)
 
 
 
+class camera_cali():
+	# termination criteria
+	self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+	self.S=(6,4)
+	self.objp = np.zeros((S[1]*S[0],3), np.float32)
+	self.objp[:,:2] = np.mgrid[0:S[0], 0:S[1]].T.reshape(-1,2)
+
+	# Arrays to store object points and image points from all the images.
+	self.objpoints = [] # 3d points in real world space
+	self.imgpoints = [] # 2d points in image plane.
+
+	def __init__(self,chessboard_size=(6,4)):
+		self.S=chessboard_size
+
+	def cali_video(self,path):
+		pass
+
+	def cali_img(self,path):
+		images = glob.glob(path+"*.jpg")
+		for idx, fname in enumerate(images):
+			img = cv2.imread(fname)
+			gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+			# Find the chessboard corners
+			ret, corners = cv2.findChessboardCorners(gray,self.S, None)
+			if ret == True:
+				self.objpoints.append(self.objp)
+				cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
+				self.imgpoints.append(corners)
+				# Draw and display the corners
+				cv2.drawChessboardCorners(img, self.S, corners,ret)
+				cv2.imshow('img',img)
+				cv2.waitKey(20)
+		cv2.destroyAllWindows()
+		ret, self.mtx, self.dist, self.rvecs, self.tvecs = cv2.calibrateCamera(self.objpoints, self.imgpoints, gray.shape[::-1],None,None)
+		
+
+	def cali_cam(camera_id=0):
+		pass
+
+	def save_cali(path):
+		try:
+			np.savez(path,mtx=self.mtx, dist=self.dist, rvecs=self.rvecs, tvecs=self.tvecs)
+		except Exception as e:
+			print(e)
+			print("you should run obj.cali_x() before you save it")
