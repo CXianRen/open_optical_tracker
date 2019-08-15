@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
 
-
+# https://blog.csdn.net/ColdWindHA/article/details/82080176
 if __name__ == "__main__":
-    cap=cv2.VideoCapture("./img/plane/test_video2.mp4")
+    cap=cv2.VideoCapture("./img/plane/test_red3.mp4")
     last_f=None
     try:
         _,last_f=cap.read()
@@ -11,20 +11,45 @@ if __name__ == "__main__":
         h,w=last_f.shape[0:2]
     except Exception as e:
         exit(0)
+
     while 1:
         ret,f =cap.read()
         if(ret):
-            f=cv2.cvtColor(f,cv2.COLOR_BGR2GRAY)
             f=cv2.GaussianBlur(f,(21,21),0)
-            dif=cv2.absdiff(f,last_f)
-            last_f=f
-            t=cv2.cv2.threshold(dif,25,255,cv2.THRESH_BINARY)[1]
-            cv2.imshow("res",cv2.resize(t,(int(w/3),int(h/3))))
-            cv2.waitKey(30)
+            f=cv2.cvtColor(f,cv2.COLOR_BGR2HSV)
+            h=f[:,:,0]
+            low_range = np.array([0, 80, 46])
+            high_range = np.array([10,255, 255])
+            th_1 = cv2.inRange(f, low_range, high_range)
+            low_range = np.array([160, 80, 46])
+            high_range = np.array([180,255, 255])
+            th_2 = cv2.inRange(f, low_range, high_range)
+            th=cv2.add(th_1,th_2)
+            cv2.imshow("h",h)
+            cv2.imshow("f",f)
+            # dif=cv2.absdiff(f,last_f)
+            # last_f=f
+            # t=cv2.cv2.threshold(dif,25,255,cv2.THRESH_BINARY)[1]
+            #cv2.imshow("res",cv2.resize(f,(int(w/3),int(h/3))))
+            cv2.imshow("th",th)
+            cv2.waitKey(0)
         else:
             break
-
-
+    # f=cv2.imread("./img/plane/test_red_img.jpg")
+    # f=cv2.GaussianBlur(f,(21,21),0)
+    # f=cv2.cvtColor(f,cv2.COLOR_BGR2HSV)
+    # h=f[:,:,0]
+    # s=f[:,:,1]
+    # v=f[:,:,2]
+    # cv2.imshow("h",h)
+    # cv2.imshow("s",s)
+    # cv2.imshow("v",v)
+    # cv2.waitKey(0)
+    # low_range = np.array([0, 123, 100])
+    # high_range = np.array([5, 255, 255])
+    # th = cv2.inRange(f, low_range, high_range)
+    # cv2.imshow("th",th)
+    # cv2.waitKey(0)
 # https://zhuanlan.zhihu.com/p/69999853
 
 # import numpy as np
