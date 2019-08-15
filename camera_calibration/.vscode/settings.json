@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "E:\\python3.5.2\\python.exe",
+    "python.pythonPath": "C:\\Users\\XianRen\\Desktop\\pyvenv\\venv-apriltags\\Scripts\\python.exe",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true
 }

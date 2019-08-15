@@ -83,8 +83,9 @@ if __name__ == "__main__":
 	cal_result_save_path="./test_img/"+camera+"/"
 	run_test=False
 
-
 	cc=camera_cali()
 	cc.cali_img(chessboard_path)
 	cc.save_cali(cal_result_save_path+"logi270.npz")
+
+	cc.test("./img/plane/tran_test3.jpg")
 
