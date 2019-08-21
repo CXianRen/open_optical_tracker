@@ -1,40 +1,43 @@
-import cv2
-import numpy as np
+# import cv2
+# import numpy as np
 
-# https://blog.csdn.net/ColdWindHA/article/details/82080176
-if __name__ == "__main__":
-    cap=cv2.VideoCapture("./img/plane/test_red3.mp4")
-    last_f=None
-    try:
-        _,last_f=cap.read()
-        last_f = cv2.cvtColor(last_f,cv2.COLOR_BGR2GRAY)
-        h,w=last_f.shape[0:2]
-    except Exception as e:
-        exit(0)
+# # https://blog.csdn.net/ColdWindHA/article/details/82080176
+# if __name__ == "__main__":
+#     cap=cv2.VideoCapture("./img/plane/test_red3.mp4")
+#     last_f=None
+#     try:
+#         _,last_f=cap.read()
+#         last_f = cv2.cvtColor(last_f,cv2.COLOR_BGR2GRAY)
+#         h,w=last_f.shape[0:2]
+#     except Exception as e:
+#         exit(0)
 
-    while 1:
-        ret,f =cap.read()
-        if(ret):
-            f=cv2.GaussianBlur(f,(21,21),0)
-            f=cv2.cvtColor(f,cv2.COLOR_BGR2HSV)
-            h=f[:,:,0]
-            low_range = np.array([0, 80, 46])
-            high_range = np.array([10,255, 255])
-            th_1 = cv2.inRange(f, low_range, high_range)
-            low_range = np.array([160, 80, 46])
-            high_range = np.array([180,255, 255])
-            th_2 = cv2.inRange(f, low_range, high_range)
-            th=cv2.add(th_1,th_2)
-            cv2.imshow("h",h)
-            cv2.imshow("f",f)
-            # dif=cv2.absdiff(f,last_f)
-            # last_f=f
-            # t=cv2.cv2.threshold(dif,25,255,cv2.THRESH_BINARY)[1]
-            #cv2.imshow("res",cv2.resize(f,(int(w/3),int(h/3))))
-            cv2.imshow("th",th)
-            cv2.waitKey(0)
-        else:
-            break
+#     while 1:
+#         ret,f =cap.read()
+#         if(ret):
+#             f=cv2.GaussianBlur(f,(21,21),0)
+#             f=cv2.cvtColor(f,cv2.COLOR_BGR2HSV)
+#             h=f[:,:,0]
+#             low_range = np.array([0, 80, 46])
+#             high_range = np.array([10,255, 255])
+#             th_1 = cv2.inRange(f, low_range, high_range)
+#             low_range = np.array([160, 80, 46])
+#             high_range = np.array([180,255, 255])
+#             th_2 = cv2.inRange(f, low_range, high_range)
+#             th=cv2.add(th_1,th_2)
+#             cv2.imshow("h",h)
+#             cv2.imshow("f",f)
+#             # dif=cv2.absdiff(f,last_f)
+#             # last_f=f
+#             # t=cv2.cv2.threshold(dif,25,255,cv2.THRESH_BINARY)[1]
+#             #cv2.imshow("res",cv2.resize(f,(int(w/3),int(h/3))))
+#             cv2.imshow("th",th)
+#             cv2.waitKey(0)
+#         else:
+#             break
+
+
+
     # f=cv2.imread("./img/plane/test_red_img.jpg")
     # f=cv2.GaussianBlur(f,(21,21),0)
     # f=cv2.cvtColor(f,cv2.COLOR_BGR2HSV)
@@ -55,7 +58,7 @@ if __name__ == "__main__":
 # import numpy as np
 # import cv2 as cv
 # import math
-# cap = cv.VideoCapture('./img/plane/test_video.mp4')
+# cap = cv.VideoCapture('D:\JIMI\物料\视频\WIN_20180815_15_04_51_Pro.mp4')
 
 # #角点检测参数
 # feature_params = dict(maxCorners=100, qualityLevel=0.1, minDistance=7, blockSize=7)
@@ -128,3 +131,5 @@ if __name__ == "__main__":
 
 # cv.destroyAllWindows()
 # cap.release()
+
+
